@@ -66,6 +66,8 @@ public class ProjectPropertyPage extends PropertyPage {
 
 	private static final String MSGFMT_TITLE = "msgfmt";
 
+	private static final String SOURCE_PREFIX_TITLE = "Source reference prefix";
+	
 	private static final String XGETTEXT_EXTENSION_TITLE = "File &Extensions (use , as Separator):";
 
 	public static final String XGETTEXT_EXTENSION_PROPERTY = "EXTENSION";
@@ -114,6 +116,10 @@ public class ProjectPropertyPage extends PropertyPage {
 	public static final String MSGFMT_RESOURCE_PROPERTY = "GETTEXT_RUNTIME_BASENAME";
 
 	private static final String MSGFMT_RESOURCE_DEFAULT = "";
+	
+	public static final String SOURCE_PREFIX_ENABLE_PROPERTY = "PREFIX ENABLE";
+	
+	public static final String SOURCE_PREFIX_PATH_PROPERTY = "PREFIX PATH";
 
 	private Text extensionText;
 
@@ -138,6 +144,11 @@ public class ProjectPropertyPage extends PropertyPage {
 	private Text messagesText;
 
 	private Text customText;
+	
+	private Button sourcePrefixEnableButton;
+	
+	private Text sourcePrefixText;
+	private Group group;
 
 	/**
 	 * Constructor for SamplePropertyPage.
@@ -161,6 +172,8 @@ public class ProjectPropertyPage extends PropertyPage {
 		this.addHeaderSection(composite);
 		this.addSpace(composite);
 
+		this.addSourcePrefixSection(composite);
+		this.addSpace(composite);
 		this.addXgettextSection(composite);
 		this.addSpace(composite);
 		this.addMsgmftSection(composite);
@@ -209,6 +222,59 @@ public class ProjectPropertyPage extends PropertyPage {
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		separator.setLayoutData(gridData);
+	}
+	
+	private void addSourcePrefixSection(final Composite parent) {
+		final Composite composite = this.createGroup(parent,
+				ProjectPropertyPage.SOURCE_PREFIX_TITLE);
+		this.sourcePrefixEnableButton = new Button(composite, SWT.CHECK);
+		this.sourcePrefixEnableButton.setText("Enable Pr&oject specific settings");
+		this.sourcePrefixEnableButton.addSelectionListener(new SelectionListener() {
+
+			public void widgetDefaultSelected(final SelectionEvent arg0) {
+			}
+
+			public void widgetSelected(final SelectionEvent arg0) {
+				sourcePrefixText.setEnabled(sourcePrefixEnableButton.getSelection());
+			}
+		});
+		try {
+			final String enable = ((IResource) this.getElement())
+					.getPersistentProperty(new QualifiedName(
+							ProjectPropertyPage.QUALIFIER,
+							ProjectPropertyPage.SOURCE_PREFIX_ENABLE_PROPERTY));
+			this.sourcePrefixEnableButton.setSelection(enable != null? Boolean.valueOf(enable)
+					: false);
+		} catch (final CoreException e) {
+			this.sourcePrefixEnableButton.setSelection(false);
+		}
+		GridData gd = new GridData();
+		gd.horizontalSpan = 3;
+		this.sourcePrefixEnableButton.setLayoutData(gd);
+		
+		
+		final Label sourcePrefixLabel = new Label(composite, SWT.NONE);
+		sourcePrefixLabel.setToolTipText("e.g. src/main, (use forward slashes)");
+		sourcePrefixLabel.setText("Source reference prefix:");
+		this.sourcePrefixText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData();
+		gd.widthHint = this
+				.convertWidthInCharsToPixels(ProjectPropertyPage.TEXT_FIELD_WIDTH);
+		gd.horizontalSpan = 2;
+		this.sourcePrefixText.setLayoutData(gd);
+		// populate messages text field
+		try {
+			final String prefix = ((IResource) this.getElement())
+					.getPersistentProperty(new QualifiedName(
+							ProjectPropertyPage.QUALIFIER,
+							ProjectPropertyPage.SOURCE_PREFIX_PATH_PROPERTY));
+			this.sourcePrefixText.setText(prefix != null ? prefix
+					: "");
+		} catch (final CoreException e) {
+			this.sourcePrefixText
+					.setText("");
+		}
+		this.sourcePrefixText.setEnabled(sourcePrefixEnableButton.getSelection());
 	}
 
 	/**
@@ -436,7 +502,6 @@ public class ProjectPropertyPage extends PropertyPage {
 		// messages text field
 		this.messagesText = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		gd = new GridData();
-		gd = new GridData();
 		gd.widthHint = this
 				.convertWidthInCharsToPixels(ProjectPropertyPage.TEXT_FIELD_WIDTH);
 		this.messagesText.setLayoutData(gd);
@@ -448,6 +513,7 @@ public class ProjectPropertyPage extends PropertyPage {
 							ProjectPropertyPage.MSGFMT_RESOURCE_PROPERTY));
 			this.messagesText.setText(owner != null ? owner
 					: ProjectPropertyPage.MSGFMT_RESOURCE_DEFAULT);
+			new Label(group, SWT.NONE);
 		} catch (final CoreException e) {
 			this.messagesText
 					.setText(ProjectPropertyPage.MSGFMT_RESOURCE_DEFAULT);
@@ -461,16 +527,16 @@ public class ProjectPropertyPage extends PropertyPage {
 	 * @return
 	 */
 	private Composite createGroup(final Composite parent, final String title) {
-		final Group group = new Group(parent, SWT.NULL);
-		final GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
-		group.setLayout(layout);
+		group = new Group(parent, SWT.NULL);
+		final GridLayout gl_group = new GridLayout();
+		gl_group.numColumns = 3;
+		group.setLayout(gl_group);
 		group.setText(title);
 
-		final GridData data = new GridData();
-		data.verticalAlignment = GridData.FILL;
-		data.horizontalAlignment = GridData.FILL;
-		group.setLayoutData(data);
+		final GridData gd_group = new GridData();
+		gd_group.verticalAlignment = GridData.FILL;
+		gd_group.horizontalAlignment = GridData.FILL;
+		group.setLayoutData(gd_group);
 
 		return group;
 	}
@@ -544,6 +610,18 @@ public class ProjectPropertyPage extends PropertyPage {
 					new QualifiedName(ProjectPropertyPage.QUALIFIER,
 							ProjectPropertyPage.MSGFMT_RESOURCE_PROPERTY),
 					this.messagesText.getText());
+			
+			((IResource) this.getElement()).setPersistentProperty(
+					new QualifiedName(ProjectPropertyPage.QUALIFIER,
+							ProjectPropertyPage.SOURCE_PREFIX_ENABLE_PROPERTY),
+					String.valueOf(this.sourcePrefixEnableButton.getSelection()));
+			
+			((IResource) this.getElement()).setPersistentProperty(
+					new QualifiedName(ProjectPropertyPage.QUALIFIER,
+							ProjectPropertyPage.SOURCE_PREFIX_PATH_PROPERTY),
+					this.sourcePrefixText.getText());
+			
+			
 
 			int index = this.languageCombo.getSelectionIndex();
 			if (index > -1) {

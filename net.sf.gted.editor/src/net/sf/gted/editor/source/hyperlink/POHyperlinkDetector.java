@@ -3,8 +3,12 @@ package net.sf.gted.editor.source.hyperlink;
 import net.sf.gted.editor.POFileEditorPlugin;
 import net.sf.gted.editor.preferences.PreferenceConstants;
 import net.sf.gted.editor.source.POSourceEditor;
+import net.sf.gted.tools.properties.ProjectPropertyPage;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -70,7 +74,8 @@ public class POHyperlinkDetector extends AbstractHyperlinkDetector {
 				if (offset >= offsetForRegion
 						&& offset <= (offsetForRegion + lenghtForRegion)) {
 					IFile file = this.editor.getIFile().getProject().getFile(
-							applySourceFilePathPrefixIfPresent(filename));
+							applySourceFilePathPrefixIfPresent(this.editor.getIFile().getProject(),
+									filename));
 					if (file == null) {
 						continue;
 					}
@@ -93,11 +98,29 @@ public class POHyperlinkDetector extends AbstractHyperlinkDetector {
 	
 	// read source reference prefix and apply to filename if exists
 	private static String applySourceFilePathPrefixIfPresent(
-			final String filename) {
-		String referencePrefix = POFileEditorPlugin
-				.getDefault()
-				.getPreferenceStore().getString(
-						PreferenceConstants.P_SOURCE_REFERENCE_PREFIX);
+			IProject project, final String filename) {
+		String referencePrefix = null;
+		try {
+			final String project_enable = project
+					.getPersistentProperty(new QualifiedName(
+							ProjectPropertyPage.QUALIFIER,
+							ProjectPropertyPage.SOURCE_PREFIX_ENABLE_PROPERTY));
+			if(Boolean.valueOf(project_enable)) {
+				referencePrefix = project
+						.getPersistentProperty(new QualifiedName(
+								ProjectPropertyPage.QUALIFIER,
+								ProjectPropertyPage.SOURCE_PREFIX_PATH_PROPERTY));
+			}
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (referencePrefix == null) {
+			referencePrefix = POFileEditorPlugin
+					.getDefault()
+					.getPreferenceStore().getString(
+							PreferenceConstants.P_SOURCE_REFERENCE_PREFIX);
+		}
 
 		boolean applyPrefix = referencePrefix != null
 				&& referencePrefix.length() > 0;

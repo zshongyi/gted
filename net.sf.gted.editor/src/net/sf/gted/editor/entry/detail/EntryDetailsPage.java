@@ -26,8 +26,12 @@ import net.sf.gted.editor.preferences.PreferenceConstants;
 import net.sf.gted.editor.util.OpenEditorHelper;
 import net.sf.gted.model.POEntry;
 import net.sf.gted.model.POReference;
+import net.sf.gted.tools.properties.ProjectPropertyPage;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -111,8 +115,10 @@ public abstract class EntryDetailsPage implements IDetailsPage {
 					final POReference reference = (POReference) obj;
 
 					final Integer lineNumber = reference.lineAsInteger();
+					
+					IProject project = poFile.getProject();
 
-					String filename = applySourceFilePathPrefixIfPresent(reference);
+					String filename = applySourceFilePathPrefixIfPresent(project,reference);
 
 					final IFile sourcefile = poFile.getProject().getFile(
 							filename);
@@ -128,11 +134,30 @@ public abstract class EntryDetailsPage implements IDetailsPage {
 
 	// read source reference prefix and apply to filename if exists
 	private static String applySourceFilePathPrefixIfPresent(
+			final IProject project,
 			final POReference reference) {
-		String referencePrefix = POFileEditorPlugin
-				.getDefault()
-				.getPreferenceStore().getString(
-						PreferenceConstants.P_SOURCE_REFERENCE_PREFIX);
+		String referencePrefix = null;
+		try {
+			final String project_enable = project
+					.getPersistentProperty(new QualifiedName(
+							ProjectPropertyPage.QUALIFIER,
+							ProjectPropertyPage.SOURCE_PREFIX_ENABLE_PROPERTY));
+			if(Boolean.valueOf(project_enable)) {
+				referencePrefix = project
+						.getPersistentProperty(new QualifiedName(
+								ProjectPropertyPage.QUALIFIER,
+								ProjectPropertyPage.SOURCE_PREFIX_PATH_PROPERTY));
+			}
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (referencePrefix == null) {
+			referencePrefix = POFileEditorPlugin
+					.getDefault()
+					.getPreferenceStore().getString(
+							PreferenceConstants.P_SOURCE_REFERENCE_PREFIX);
+		}
 
 		boolean applyPrefix = referencePrefix != null
 				&& referencePrefix.length() > 0;
