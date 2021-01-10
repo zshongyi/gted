@@ -120,6 +120,10 @@ public class POConfiguration extends SourceViewerConfiguration {
 		reconciler.setRepairer(dr, POPartitionScanner.PO_COMMENT);
 
 		dr = new DefaultDamagerRepairer(this.getPOKeyWordScanner());
+		reconciler.setDamager(dr, POPartitionScanner.PO_MSGCTXT);
+		reconciler.setRepairer(dr, POPartitionScanner.PO_MSGCTXT);
+		
+		dr = new DefaultDamagerRepairer(this.getPOKeyWordScanner());
 		reconciler.setDamager(dr, POPartitionScanner.PO_MSGID);
 		reconciler.setRepairer(dr, POPartitionScanner.PO_MSGID);
 
@@ -143,7 +147,9 @@ public class POConfiguration extends SourceViewerConfiguration {
 	@Override
 	public String[] getConfiguredContentTypes(final ISourceViewer sourceViewer) {
 		return new String[] { IDocument.DEFAULT_CONTENT_TYPE,
-				POPartitionScanner.PO_COMMENT, POPartitionScanner.PO_MSGID,
+				POPartitionScanner.PO_COMMENT,
+				POPartitionScanner.PO_MSGCTXT,
+				POPartitionScanner.PO_MSGID,
 				POPartitionScanner.PO_MSGID_PLURAL,
 				POPartitionScanner.PO_MSGSTR };
 	}

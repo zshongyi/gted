@@ -48,6 +48,7 @@ public class PODocumentProvider extends FileDocumentProvider {
 			final IDocumentPartitioner partitioner = new POPartitioner(
 					new POPartitionScanner(), new String[] {
 							POPartitionScanner.PO_COMMENT,
+							POPartitionScanner.PO_MSGCTXT,
 							POPartitionScanner.PO_MSGID,
 							POPartitionScanner.PO_MSGID_PLURAL,
 							POPartitionScanner.PO_MSGSTR });

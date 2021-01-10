@@ -222,7 +222,7 @@ public class POParser2 {
 		// Parse Header
 		//
 		if (line.startsWith("#, fuzzy")) {
-			line = br.readLine(); // msgctxt"" or msgid ""
+			line = br.readLine(); // msgid ""
 			linenumber++;
 		}
 		if (line.startsWith("msgid")) {

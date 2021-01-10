@@ -48,6 +48,8 @@ public class POKeyWordScanner extends RuleBasedScanner {
 	public POKeyWordScanner(final ColorManager manager) {
 		final IToken poComment = new Token(new TextAttribute(manager
 				.getColor(IPOColorConstants.PO_COMMENT)));
+		final IToken poMsgctxt = new Token(new TextAttribute(manager
+				.getColor(IPOColorConstants.PO_KEYWORD)));
 		final IToken poMsgid = new Token(new TextAttribute(manager
 				.getColor(IPOColorConstants.PO_KEYWORD)));
 		final IToken poMsgidplural = new Token(new TextAttribute(manager
@@ -57,7 +59,7 @@ public class POKeyWordScanner extends RuleBasedScanner {
 		final IToken string = new Token(new TextAttribute(manager
 				.getColor(IPOColorConstants.PO_STRING)));
 
-		final IRule[] rules = new IRule[11];
+		final IRule[] rules = new IRule[12];
 
 		rules[0] = new EndOfLineRule("# ", poComment);
 		rules[1] = new EndOfLineRule("#.", poComment);
@@ -65,11 +67,12 @@ public class POKeyWordScanner extends RuleBasedScanner {
 		rules[3] = new EndOfLineRule("#:", poComment);
 		rules[4] = new EndOfLineRule("#|", poComment);
 		rules[5] = new EndOfLineRule("#\n", poComment);
-		rules[6] = new SingleLineRule("msgid", " ", poMsgid);
-		rules[7] = new SingleLineRule("msgid_plural", " ", poMsgidplural);
-		rules[8] = new SingleLineRule("msgstr", " ", poMsgstr);
-		rules[9] = new SingleLineRule("\"", "\"", string, '\\');
-		rules[10] = new WhitespaceRule(new POWhitespaceDetector());
+		rules[6] = new SingleLineRule("msgctxt", " ", poMsgctxt);
+		rules[7] = new SingleLineRule("msgid", " ", poMsgid);
+		rules[8] = new SingleLineRule("msgid_plural", " ", poMsgidplural);
+		rules[9] = new SingleLineRule("msgstr", " ", poMsgstr);
+		rules[10] = new SingleLineRule("\"", "\"", string, '\\');
+		rules[11] = new WhitespaceRule(new POWhitespaceDetector());
 
 		this.setRules(rules);
 	}
