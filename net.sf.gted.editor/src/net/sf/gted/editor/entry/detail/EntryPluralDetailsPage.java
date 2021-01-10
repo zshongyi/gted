@@ -26,10 +26,8 @@ import net.sf.gted.editor.entry.master.POMasterDetailsBlock;
 import net.sf.gted.model.POEntryPlural;
 import net.sf.gted.model.POFile;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -40,11 +38,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormPart;
-import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
@@ -57,21 +53,8 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
  * @version $Revision: 1.10 $, $Date: 2008/08/12 11:19:07 $
  */
 public class EntryPluralDetailsPage extends EntryDetailsPage {
-
-	/** The column names. */
-	private final String[] columnNames = { "File", "Line" };
-
-	private IManagedForm managedForm;
-
-	private TableViewer viewer;
-
-	private Table table;
-
-	private POMasterDetailsBlock block;
-
+	
 	private POEntryPlural entry;
-
-	private Text msgIdText;
 
 	private Text msgStr0Text;
 
@@ -81,9 +64,6 @@ public class EntryPluralDetailsPage extends EntryDetailsPage {
 
 	private Text msgStr3Text;
 
-	private Button fuzzyButton;
-
-	private Text commentsText;
 
 	/**
 	 * Create the details page
@@ -92,15 +72,6 @@ public class EntryPluralDetailsPage extends EntryDetailsPage {
 	 */
 	public EntryPluralDetailsPage(POMasterDetailsBlock masterDetailsBlock2) {
 		this.block = masterDetailsBlock2;
-	}
-
-	/**
-	 * Initialize the details page
-	 * 
-	 * @param form
-	 */
-	public void initialize(IManagedForm form) {
-		managedForm = form;
 	}
 
 	/**
@@ -137,6 +108,17 @@ public class EntryPluralDetailsPage extends EntryDetailsPage {
 		gridLayout_1.numColumns = 2;
 		composite.setLayout(gridLayout_1);
 
+		final Label msgctxtLabel = toolkit.createLabel(composite, "msgctxt",
+				SWT.NONE);
+		msgctxtLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+		
+		msgCtxtText = toolkit.createText(composite, null, SWT.V_SCROLL
+				| SWT.MULTI);
+		final GridData gridData_8 = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData_8.minimumHeight = 50;
+		msgCtxtText.setLayoutData(gridData_8);
+		msgCtxtText.setEditable(false);
+		
 		final Label msgidLabel = toolkit.createLabel(composite, "msgId",
 				SWT.NONE);
 		msgidLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
@@ -300,9 +282,8 @@ public class EntryPluralDetailsPage extends EntryDetailsPage {
 	protected void update() {
 		if (this.msgIdText != null) {
 			filled = false;
-
-			String msgId = entry.getMsgId();
-			this.msgIdText.setText(msgId);
+			
+			this.update_common_widgets(this.entry);
 
 			this.msgStr3Text.setVisible(false);
 			this.msgStr2Text.setVisible(false);
@@ -326,13 +307,6 @@ public class EntryPluralDetailsPage extends EntryDetailsPage {
 				this.msgStr0Text.setText(entry.getMsgStr(0));
 				this.msgStr0Text.setVisible(true);
 			}
-
-			this.fuzzyButton.setSelection(entry.isFuzzy());
-
-			this.commentsText.setText(entry.getTranslaterCommentsAsString());
-
-			IFile iFile = block.getPage().getEditor().getPoEditor().getIFile();
-			createReferencesViewer(viewer, entry, table, columnNames, iFile);
 
 			filled = true;
 		}

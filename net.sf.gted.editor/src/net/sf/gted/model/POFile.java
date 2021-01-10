@@ -259,7 +259,30 @@ public class POFile implements IPOParserCallback {
 			if (parserEntry.isFuzzy()) {
 				out.println("#, fuzzy");
 			}
-
+			
+			if (parserEntry.getMsgCtxt()!= null) {
+				if( parserEntry.getMsgCtxt().contains("\n")) {
+					boolean firstline = true;
+					final StringTokenizer stMsgCtxt = new StringTokenizer(parserEntry
+							.getMsgCtxt(), "\n");
+					while (stMsgCtxt.hasMoreTokens()) {
+						String msgCtxt = stMsgCtxt.nextToken().replace("\r", "");
+						if (firstline) {
+							if (parserEntry.getMsgCtxt().startsWith("\n")) {
+								out.println("msgctxt \"\"\n\"" + msgCtxt + "\"");
+							} else {
+								out.println("msgctxt \"" + msgCtxt + "\"");
+							}
+							firstline = false;
+						} else {
+							out.println("\"" + msgCtxt + "\"");
+						}
+					}
+				} else {
+					out.println("msgctxt \"" + parserEntry.getMsgCtxt() + "\"");
+				}
+			}
+			
 			if (parserEntry.getMsgId().contains("\n")) {
 				boolean firstline = true;
 				final StringTokenizer stMsgId = new StringTokenizer(parserEntry

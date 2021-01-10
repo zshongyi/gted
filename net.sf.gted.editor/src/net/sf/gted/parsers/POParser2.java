@@ -87,7 +87,7 @@ public class POParser2 {
 				//
 				// Parse Entry Comments
 				//
-				while (line != null && !line.startsWith("msgid")) {
+				while (line != null && !line.startsWith("msgctxt") && !line.startsWith("msgid")) {
 					if (line.startsWith("#:")) {
 						this.extractReferences(entry, line.substring(2).trim());
 					} else if (line.startsWith("# ")) {
@@ -125,7 +125,13 @@ public class POParser2 {
 	 * @throws IOException
 	 */
 	private void parseEntry(BufferedReader br) throws IOException {
-		if (line.startsWith("msgid ")) {
+		if (line.startsWith("msgctxt")) {
+			String msgctxt = line.substring(line.indexOf("\"") + 1, line
+					.lastIndexOf("\""));
+			entry.setMsgCtxt(msgctxt);
+			line = br.readLine();
+			linenumber++;
+		} else if (line.startsWith("msgid ")) {
 			entry.setLine(linenumber);
 
 			String msgId = line.substring(line.indexOf("\"") + 1, line
@@ -143,8 +149,7 @@ public class POParser2 {
 			}
 
 			entry.setMsgId(msgId);
-		} else {
-			if (line.startsWith("msgid_plural")) {
+		} else if (line.startsWith("msgid_plural")) {
 				entry = new POEntryPlural((POEntrySingular) entry);
 				String msgIdPlural = line.substring(line.indexOf("\"") + 1,
 						line.lastIndexOf("\""));
@@ -162,41 +167,40 @@ public class POParser2 {
 
 				POEntryPlural entryPlural = ((POEntryPlural) entry);
 				entryPlural.setMsgIdPlural(msgIdPlural);
-			} else if (line.startsWith("msgstr ")) {
-				String msgStr = line.substring(line.indexOf("\"") + 1, line
-						.lastIndexOf("\""));
+		} else if (line.startsWith("msgstr ")) {
+			String msgStr = line.substring(line.indexOf("\"") + 1, line
+					.lastIndexOf("\""));
 
-				line = br.readLine();
-				linenumber++;
+			line = br.readLine();
+			linenumber++;
 
-				while (line != null && line.startsWith("\"")) {
-					String msgStringLine = line.substring(
-							line.indexOf("\"") + 1, line.lastIndexOf("\""));
-					msgStr += "\n";
-					msgStr += msgStringLine;
-					line = br.readLine();
-					linenumber++;
-				}
-
-				((POEntrySingular) entry).setMsgStr(msgStr);
-			} else if (line.startsWith("msgstr[")) {
-				POEntryPlural entryPlural = ((POEntryPlural) entry);
-
-				entryPlural.addMsgStr(line.substring(line.indexOf("\"") + 1,
-						line.lastIndexOf("\"")));
-				line = br.readLine();
-				linenumber++;
-				while (line != null && line.startsWith("\"")) {
-					entryPlural.addMsgStr(line.substring(
-							line.indexOf("\"") + 1, line.lastIndexOf("\"")));
-					line = br.readLine();
-					linenumber++;
-				}
-			} else {
+			while (line != null && line.startsWith("\"")) {
+				String msgStringLine = line.substring(
+						line.indexOf("\"") + 1, line.lastIndexOf("\""));
+				msgStr += "\n";
+				msgStr += msgStringLine;
 				line = br.readLine();
 				linenumber++;
 			}
-		}
+
+			((POEntrySingular) entry).setMsgStr(msgStr);
+		} else if (line.startsWith("msgstr[")) {
+			POEntryPlural entryPlural = ((POEntryPlural) entry);
+
+			entryPlural.addMsgStr(line.substring(line.indexOf("\"") + 1,
+					line.lastIndexOf("\"")));
+			line = br.readLine();
+			linenumber++;
+			while (line != null && line.startsWith("\"")) {
+				entryPlural.addMsgStr(line.substring(
+						line.indexOf("\"") + 1, line.lastIndexOf("\"")));
+				line = br.readLine();
+				linenumber++;
+			}
+		}else {
+				line = br.readLine();
+				linenumber++;
+			}
 	}
 
 	/**
@@ -218,11 +222,10 @@ public class POParser2 {
 		// Parse Header
 		//
 		if (line.startsWith("#, fuzzy")) {
-			line = br.readLine(); // msgid ""
+			line = br.readLine(); // msgctxt"" or msgid ""
 			linenumber++;
-			line = br.readLine(); // msgstr ""
-			linenumber++;
-		} else if (line.startsWith("msgid")) {
+		}
+		if (line.startsWith("msgid")) {
 			line = br.readLine(); // msgstr ""
 			linenumber++;
 		}

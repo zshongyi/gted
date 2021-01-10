@@ -49,6 +49,8 @@ public abstract class POEntry {
 
 	/** The references. */
 	private List<POReference> references = new ArrayList<POReference>();
+	
+	private String msgCtxt;
 
 	/** The msg id. */
 	private String msgId;
@@ -71,6 +73,7 @@ public abstract class POEntry {
 		flagComments = copy.flagComments;
 		fuzzy = copy.fuzzy;
 		line = copy.line;
+		msgCtxt = copy.msgCtxt;
 		msgId = copy.msgId;
 		obsolete = copy.obsolete;
 		references = copy.references;
@@ -117,6 +120,14 @@ public abstract class POEntry {
 
 	public void setReferences(List<POReference> references) {
 		this.references = references;
+	}
+
+	public String getMsgCtxt() {
+		return msgCtxt;
+	}
+
+	public void setMsgCtxt(String msgCtxt) {
+		this.msgCtxt = msgCtxt;
 	}
 
 	public String getMsgId() {

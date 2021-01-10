@@ -25,10 +25,8 @@ import java.util.StringTokenizer;
 import net.sf.gted.editor.entry.master.POMasterDetailsBlock;
 import net.sf.gted.model.POEntrySingular;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -39,7 +37,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormPart;
@@ -54,22 +51,10 @@ import org.eclipse.ui.forms.widgets.Section;
  * @version $Revision: 1.12 $, $Date: 2009/04/28 10:51:41 $
  */
 public class EntrySingularDetailsPage extends EntryDetailsPage {
-
-	private TableViewer viewer;
-
-	private Table table;
-
-	private POMasterDetailsBlock block;
-
+	
 	private POEntrySingular entry;
 
-	private Text msgIdText;
-
 	private Text msgStrText;
-
-	private Button fuzzyButton;
-
-	private Text commentsText;
 
 	/**
 	 * Create the details page
@@ -107,6 +92,17 @@ public class EntrySingularDetailsPage extends EntryDetailsPage {
 		final GridLayout gridLayout_1 = new GridLayout();
 		gridLayout_1.numColumns = 2;
 		composite.setLayout(gridLayout_1);
+		
+		final Label msgctxtLabel = toolkit.createLabel(composite, "msgctxt",
+				SWT.NONE);
+		msgctxtLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+		
+		msgCtxtText = toolkit.createText(composite, null, SWT.V_SCROLL
+				| SWT.MULTI);
+		final GridData gridData_8 = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData_8.minimumHeight = 50;
+		msgCtxtText.setLayoutData(gridData_8);
+		msgCtxtText.setEditable(false);
 
 		final Label msgidLabel = toolkit.createLabel(composite, "msgId",
 				SWT.NONE);
@@ -226,19 +222,11 @@ public class EntrySingularDetailsPage extends EntryDetailsPage {
 	protected void update() {
 		if (this.msgIdText != null) {
 			filled = false;
-			String msgId = entry.getMsgId();
-			msgIdText.setText(msgId);
+			
+			this.update_common_widgets(this.entry);
 
 			String msgStr = entry.getMsgStr();
 			msgStrText.setText(msgStr);
-
-			boolean fuzzy = entry.isFuzzy();
-			fuzzyButton.setSelection(fuzzy);
-
-			this.commentsText.setText(entry.getTranslaterCommentsAsString());
-
-			IFile file = block.getPage().getEditor().getPoEditor().getIFile();
-			createReferencesViewer(viewer, entry, table, columnNames, file);
 
 			filled = true;
 		}

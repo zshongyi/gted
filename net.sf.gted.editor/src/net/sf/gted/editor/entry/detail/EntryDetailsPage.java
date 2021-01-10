@@ -21,6 +21,7 @@ package net.sf.gted.editor.entry.detail;
 import net.sf.gted.editor.POFileEditorPlugin;
 import net.sf.gted.editor.entry.detail.preferences.ReferenceTableContentProvider;
 import net.sf.gted.editor.entry.detail.preferences.ReferenceTableLabelProvider;
+import net.sf.gted.editor.entry.master.POMasterDetailsBlock;
 import net.sf.gted.editor.preferences.PreferenceConstants;
 import net.sf.gted.editor.util.OpenEditorHelper;
 import net.sf.gted.model.POEntry;
@@ -31,7 +32,9 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -50,6 +53,20 @@ public abstract class EntryDetailsPage implements IDetailsPage {
 	protected boolean filled;
 
 	protected final String[] columnNames = { "File", "Line" };
+	
+	protected TableViewer viewer;
+
+	protected Table table;
+
+	protected POMasterDetailsBlock block;
+ 
+	protected Text msgCtxtText;
+ 
+	protected Text msgIdText;
+ 
+	protected Button fuzzyButton;
+ 
+	protected Text commentsText;
 
 	/**
 	 * Initialize the details page
@@ -201,6 +218,27 @@ public abstract class EntryDetailsPage implements IDetailsPage {
 	 */
 	public void refresh() {
 		update();
+	}
+	
+	protected void update_common_widgets(POEntry entry) {
+			
+		String msgCtxt = entry.getMsgCtxt();
+		if (msgCtxt != null) {
+			this.msgCtxtText.setText(msgCtxt);
+		} else {
+			this.msgCtxtText.setText("");
+		}
+		
+		String msgId = entry.getMsgId();
+		msgIdText.setText(msgId);
+
+		boolean fuzzy = entry.isFuzzy();
+		fuzzyButton.setSelection(fuzzy);
+
+		this.commentsText.setText(entry.getTranslaterCommentsAsString());
+
+		IFile file = block.getPage().getEditor().getPoEditor().getIFile();
+		createReferencesViewer(viewer, entry, table, columnNames, file);
 	}
 
 	/**
