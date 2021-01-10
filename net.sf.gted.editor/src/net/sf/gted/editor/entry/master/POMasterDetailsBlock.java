@@ -145,12 +145,10 @@ public class POMasterDetailsBlock extends MasterDetailsBlock {
 			public void widgetSelected(final SelectionEvent e) {
 				if (filterFuzzyButton.getSelection()) {
 					viewer.addFilter(fuzzyFilter);
+					filterUntranslatedButton.setSelection(false);
+					removeFilterifexist(untranslatedFilter);
 				} else {
-					ViewerFilter[] filters = viewer.getFilters();
-					List<ViewerFilter> list = Arrays.asList(filters);
-					if (list.contains(fuzzyFilter)) {
-						viewer.removeFilter(fuzzyFilter);
-					}
+						removeFilterifexist(fuzzyFilter);
 				}
 			}
 
@@ -166,12 +164,10 @@ public class POMasterDetailsBlock extends MasterDetailsBlock {
 			public void widgetSelected(final SelectionEvent e) {
 				if (filterUntranslatedButton.getSelection()) {
 					viewer.addFilter(untranslatedFilter);
+					filterFuzzyButton.setSelection(false);
+					removeFilterifexist(fuzzyFilter); 
 				} else {
-					ViewerFilter[] filters = viewer.getFilters();
-					List<ViewerFilter> list = Arrays.asList(filters);
-					if (list.contains(untranslatedFilter)) {
-						viewer.removeFilter(untranslatedFilter);
-					}
+					removeFilterifexist(untranslatedFilter);
 				}
 			}
 
@@ -401,5 +397,13 @@ public class POMasterDetailsBlock extends MasterDetailsBlock {
 
 	public POEntry getSelectedEntry() {
 		return selectedEntry;
+	}
+	
+	private void removeFilterifexist(ViewerFilter viewerFilter) {
+		ViewerFilter[] filters = viewer.getFilters();
+		List<ViewerFilter> list = Arrays.asList(filters);
+		if (list.contains(viewerFilter)) {
+			viewer.removeFilter(viewerFilter);
+		}
 	}
 }
