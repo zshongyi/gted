@@ -81,7 +81,7 @@ public class POMasterDetailsBlock extends MasterDetailsBlock {
 	private UntranslatedFilter untranslatedFilter;
 
 	/** The column names. */
-	private final String[] columnNames = { "fuzzy", "msgId", "msgStr" };
+	private final String[] columnNames = { "fuzzy", "msgId", "msgStr", "msgCtxt" };
 
 	private Button filterFuzzyButton;
 
@@ -216,6 +216,18 @@ public class POMasterDetailsBlock extends MasterDetailsBlock {
 				table.setSortColumn(columnMsgStr);
 			}
 		});
+		
+		final TableColumn columnMsgCtxt = new TableColumn(table, SWT.NONE);
+		columnMsgCtxt.setWidth(300);
+		columnMsgCtxt.setText(this.columnNames[3]);
+		columnMsgCtxt.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				createSort(EntrySorter.SORT_MSG_CTXT);
+				table.setSortColumn(columnMsgCtxt);
+			}
+		});
 
 		toolkit.paintBordersFor(composite);
 		entriesSection.setClient(composite);
@@ -233,16 +245,18 @@ public class POMasterDetailsBlock extends MasterDetailsBlock {
 	private void setSashFormHorizontal(ScrolledForm form) {
 		sashForm.setOrientation(SWT.HORIZONTAL);
 		sashForm.setWeights(new int[] { 3, 4 });
-		table.getColumn(1).setWidth(150);
-		table.getColumn(2).setWidth(150);
+		table.getColumn(1).setWidth(100);
+		table.getColumn(2).setWidth(100);
+		table.getColumn(3).setWidth(100);
 		form.reflow(true);
 	}
 
 	private void setSashFormVertical(ScrolledForm form) {
 		sashForm.setOrientation(SWT.VERTICAL);
 		sashForm.setWeights(new int[] { 3, 4 });
-		table.getColumn(1).setWidth(300);
-		table.getColumn(2).setWidth(300);
+		table.getColumn(1).setWidth(200);
+		table.getColumn(2).setWidth(200);
+		table.getColumn(3).setWidth(200);
 		form.reflow(true);
 	}
 

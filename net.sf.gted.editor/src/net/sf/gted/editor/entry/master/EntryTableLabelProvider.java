@@ -82,6 +82,8 @@ public class EntryTableLabelProvider extends LabelProvider implements
 				result = entry.getMsgId();
 			} else if (index == 2) {
 				result = entry.getMsgStr();
+			} else if (index == 3) {
+				result = entry.getMsgCtxt();
 			}
 		}
 		return result;

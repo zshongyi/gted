@@ -40,6 +40,9 @@ class EntrySorter extends ViewerSorter {
 
 	/** The Constant SORT_MSG_STR. */
 	public static final int SORT_MSG_STR = 2;
+	
+	/** The Constant SORT_MSG_STR. */
+	public static final int SORT_MSG_CTXT = 3;
 
 	/** The column. */
 	private int column;
@@ -93,6 +96,11 @@ class EntrySorter extends ViewerSorter {
 			}
 			// TODO compare correct
 			return this.getSort(0);
+		case SORT_MSG_CTXT:
+			String msgctxt_1 = entry1.getMsgCtxt()!=null?entry1.getMsgCtxt():"";
+			String msgctxt_2 = entry2.getMsgCtxt()!=null?entry2.getMsgCtxt():"";
+			sort = this.getComparator().compare(msgctxt_1, msgctxt_2);
+			return this.getSort(sort);
 		default:
 			sort = this.getComparator().compare(entry1.getMsgId(),
 					entry2.getMsgId());
