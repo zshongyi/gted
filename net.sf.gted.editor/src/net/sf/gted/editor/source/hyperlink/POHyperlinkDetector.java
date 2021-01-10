@@ -1,5 +1,7 @@
 package net.sf.gted.editor.source.hyperlink;
 
+import net.sf.gted.editor.POFileEditorPlugin;
+import net.sf.gted.editor.preferences.PreferenceConstants;
 import net.sf.gted.editor.source.POSourceEditor;
 
 import org.eclipse.core.resources.IFile;
@@ -68,7 +70,7 @@ public class POHyperlinkDetector extends AbstractHyperlinkDetector {
 				if (offset >= offsetForRegion
 						&& offset <= (offsetForRegion + lenghtForRegion)) {
 					IFile file = this.editor.getIFile().getProject().getFile(
-							filename);
+							applySourceFilePathPrefixIfPresent(filename));
 					if (file == null) {
 						continue;
 					}
@@ -87,5 +89,26 @@ public class POHyperlinkDetector extends AbstractHyperlinkDetector {
 			}
 		}
 		return null;
+	}
+	
+	// read source reference prefix and apply to filename if exists
+	private static String applySourceFilePathPrefixIfPresent(
+			final String filename) {
+		String referencePrefix = POFileEditorPlugin
+				.getDefault()
+				.getPreferenceStore().getString(
+						PreferenceConstants.P_SOURCE_REFERENCE_PREFIX);
+
+		boolean applyPrefix = referencePrefix != null
+				&& referencePrefix.length() > 0;
+		if(applyPrefix) {
+			if (!referencePrefix.endsWith("/")
+					&& !filename.startsWith("/")) {
+				referencePrefix += "/";
+			}
+			return referencePrefix + filename;
+		}
+
+		return filename;
 	}
 }
