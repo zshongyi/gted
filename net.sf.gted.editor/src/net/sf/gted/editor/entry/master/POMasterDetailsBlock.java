@@ -38,12 +38,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -54,6 +58,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
@@ -61,6 +66,9 @@ import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * POMasterDetailsBlock.
@@ -240,6 +248,36 @@ public class POMasterDetailsBlock extends MasterDetailsBlock {
 		this.untranslatedFilter = new UntranslatedFilter();
 
 		this.createPopupMenu();
+		this.table.addMouseListener(new MouseListener() {
+			
+			public void mouseUp(MouseEvent arg0) {
+				
+			}
+			
+			public void mouseDown(MouseEvent arg0) {
+				
+			}
+			
+			public void mouseDoubleClick(MouseEvent arg0) {
+				page.getEditor().showSourceEditor();
+				IEditorPart editorPart = page.getEditor().getActiveEditor();
+
+				if (editorPart instanceof ITextEditor) {
+				   ITextEditor editor = (ITextEditor)editorPart;
+
+				   IDocumentProvider provider = editor.getDocumentProvider();
+				   IDocument document = provider.getDocument(editor.getEditorInput());
+
+				   try {
+					   // TODO: 
+					     int lineStart = document.getLineOffset(selectedEntry.getLine());
+					     editor.selectAndReveal(lineStart, 0);
+				   } catch (BadLocationException x) {
+				        // ignore
+				   }
+				}
+			}
+		});
 	}
 
 	private void setSashFormHorizontal(ScrolledForm form) {
