@@ -118,11 +118,11 @@ public abstract class EntryDetailsPage implements IDetailsPage {
 					
 					IProject project = poFile.getProject();
 
-					String filename = applySourceFilePathPrefixIfPresent(project,reference);
+					String filename = applySourceFilePathPrefixIfPresent(project, reference);
 
 					final IFile sourcefile = poFile.getProject().getFile(
 							filename);
-
+ 
 					OpenEditorHelper.openEditor(sourcefile, lineNumber);
 				}
 			}
@@ -147,16 +147,15 @@ public abstract class EntryDetailsPage implements IDetailsPage {
 						.getPersistentProperty(new QualifiedName(
 								ProjectPropertyPage.QUALIFIER,
 								ProjectPropertyPage.SOURCE_PREFIX_PATH_PROPERTY));
+			}else {
+				referencePrefix = POFileEditorPlugin
+						.getDefault()
+						.getPreferenceStore().getString(
+								PreferenceConstants.P_SOURCE_REFERENCE_PREFIX);
 			}
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		if (referencePrefix == null) {
-			referencePrefix = POFileEditorPlugin
-					.getDefault()
-					.getPreferenceStore().getString(
-							PreferenceConstants.P_SOURCE_REFERENCE_PREFIX);
 		}
 
 		boolean applyPrefix = referencePrefix != null
