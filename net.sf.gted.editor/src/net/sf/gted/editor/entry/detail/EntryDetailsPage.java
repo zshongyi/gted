@@ -26,7 +26,6 @@ import net.sf.gted.editor.preferences.PreferenceConstants;
 import net.sf.gted.editor.util.OpenEditorHelper;
 import net.sf.gted.model.POEntry;
 import net.sf.gted.model.POReference;
-import net.sf.gted.tools.properties.ProjectPropertyPage;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -140,13 +139,13 @@ public abstract class EntryDetailsPage implements IDetailsPage {
 		try {
 			final String project_enable = project
 					.getPersistentProperty(new QualifiedName(
-							ProjectPropertyPage.QUALIFIER,
-							ProjectPropertyPage.SOURCE_PREFIX_ENABLE_PROPERTY));
+							PreferenceConstants.P_QUALIFIER,
+							PreferenceConstants.P_SOURCE_REFERENCE_ENABLE));
 			if(Boolean.valueOf(project_enable)) {
 				referencePrefix = project
 						.getPersistentProperty(new QualifiedName(
-								ProjectPropertyPage.QUALIFIER,
-								ProjectPropertyPage.SOURCE_PREFIX_PATH_PROPERTY));
+								PreferenceConstants.P_QUALIFIER,
+								PreferenceConstants.P_SOURCE_REFERENCE_PREFIX));
 			}
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block

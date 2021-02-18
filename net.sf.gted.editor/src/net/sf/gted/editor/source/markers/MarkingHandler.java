@@ -93,7 +93,7 @@ public class MarkingHandler implements IErrorHandler {
 	public void addMessage(final String message, final int lineNumber,
 			String severity) {
 
-		final Map<String, Integer> map = new HashMap<String, Integer>();
+		final Map<String, Object> map = new HashMap<String, Object>();
 
 		if (lineNumber != 0) {
 			this.setLocation(lineNumber, map);
@@ -125,7 +125,7 @@ public class MarkingHandler implements IErrorHandler {
 	 * @param map
 	 */
 	private void setLocation(final int lineNumber,
-			final Map<String, Integer> map) {
+			final Map<String, Object> map) {
 		MarkerUtilities.setLineNumber(map, lineNumber);
 		map.put(IMarker.LOCATION, lineNumber);
 

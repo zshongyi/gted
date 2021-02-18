@@ -117,9 +117,9 @@ public class ProjectPropertyPage extends PropertyPage {
 
 	private static final String MSGFMT_RESOURCE_DEFAULT = "";
 	
-	public static final String SOURCE_PREFIX_ENABLE_PROPERTY = "PREFIX ENABLE";
+	public static final String SOURCE_REFERENCE_ENABLE = "enable_source_reference_prefix";
 	
-	public static final String SOURCE_PREFIX_PATH_PROPERTY = "PREFIX PATH";
+	public static final String SOURCE_PREFIX_PATH_PROPERTY = "source_reference_prefix";
 
 	private Text extensionText;
 
@@ -242,7 +242,7 @@ public class ProjectPropertyPage extends PropertyPage {
 			final String enable = ((IResource) this.getElement())
 					.getPersistentProperty(new QualifiedName(
 							ProjectPropertyPage.QUALIFIER,
-							ProjectPropertyPage.SOURCE_PREFIX_ENABLE_PROPERTY));
+							ProjectPropertyPage.SOURCE_REFERENCE_ENABLE));
 			this.sourcePrefixEnableButton.setSelection(enable != null? Boolean.valueOf(enable)
 					: false);
 		} catch (final CoreException e) {
@@ -613,7 +613,7 @@ public class ProjectPropertyPage extends PropertyPage {
 			
 			((IResource) this.getElement()).setPersistentProperty(
 					new QualifiedName(ProjectPropertyPage.QUALIFIER,
-							ProjectPropertyPage.SOURCE_PREFIX_ENABLE_PROPERTY),
+							ProjectPropertyPage.SOURCE_REFERENCE_ENABLE),
 					String.valueOf(this.sourcePrefixEnableButton.getSelection()));
 			
 			((IResource) this.getElement()).setPersistentProperty(

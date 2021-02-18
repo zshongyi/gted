@@ -99,8 +99,7 @@ public class EditorPreferencePage extends FieldEditorPreferencePage implements
 		StringFieldEditor sourceRefPrefixPref = new StringFieldEditor(
 				PreferenceConstants.P_SOURCE_REFERENCE_PREFIX,
 				"Source reference prefix\ne.g. src/main, (use forward slashes)",
-				this
-						.getFieldEditorParent());
+				this.getFieldEditorParent());
 		sourceRefPrefixPref.setEmptyStringAllowed(true);
 		this.addField(sourceRefPrefixPref);
 	}

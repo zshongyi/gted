@@ -41,6 +41,9 @@ public class PreferenceConstants {
 	public static final String P_INFO = "info";
 	public static final String P_IGNORE = "ignore";
 	
+	public static final String P_SOURCE_REFERENCE_ENABLE = "enable_source_reference_prefix";
 	public static final String P_SOURCE_REFERENCE_PREFIX = "source_reference_prefix";
+	
+	public static final String P_QUALIFIER = "net.sf.gted";
 
 }

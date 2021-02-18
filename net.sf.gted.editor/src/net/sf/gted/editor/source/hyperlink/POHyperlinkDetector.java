@@ -3,7 +3,6 @@ package net.sf.gted.editor.source.hyperlink;
 import net.sf.gted.editor.POFileEditorPlugin;
 import net.sf.gted.editor.preferences.PreferenceConstants;
 import net.sf.gted.editor.source.POSourceEditor;
-import net.sf.gted.tools.properties.ProjectPropertyPage;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -103,13 +102,13 @@ public class POHyperlinkDetector extends AbstractHyperlinkDetector {
 		try {
 			final String project_enable = project
 					.getPersistentProperty(new QualifiedName(
-							ProjectPropertyPage.QUALIFIER,
-							ProjectPropertyPage.SOURCE_PREFIX_ENABLE_PROPERTY));
+							PreferenceConstants.P_QUALIFIER,
+							PreferenceConstants.P_SOURCE_REFERENCE_ENABLE));
 			if(Boolean.valueOf(project_enable)) {
 				referencePrefix = project
 						.getPersistentProperty(new QualifiedName(
-								ProjectPropertyPage.QUALIFIER,
-								ProjectPropertyPage.SOURCE_PREFIX_PATH_PROPERTY));
+								PreferenceConstants.P_QUALIFIER,
+								PreferenceConstants.P_SOURCE_REFERENCE_PREFIX));
 			}
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
